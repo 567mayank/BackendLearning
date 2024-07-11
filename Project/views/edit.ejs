@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-900 text-white">
+    <div class="m-10 gap-y-4 flex flex-col">
+        <a href="/" class="text-blue-600 ">Go Back</a>
+        <form class="flex flex-col gap-y-2 " action="/edit" method="post">
+            <input class=" mb-2  w-[25%] bg-zinc-700 outline-none p-2 rounded-lg" type="hidden"  value=<%=filname%> name="prev"/>
+            <input class=" mb-2  w-[25%] bg-zinc-700 outline-none p-2 rounded-lg" type="text" disabled value=<%=filname%> />
+            <input class=" mb-2  w-[25%] bg-zinc-700 outline-none p-2 rounded-lg" type="text" placeholder="Enter New Name" name="new"/>
+            <input class=" bg-yellow-600 w-fit p-2 rounded-lg" type="submit" value="Change Name"/>
+        </form>
+    </div>
+</body>
+</html>

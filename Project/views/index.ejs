@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-900 text-white">
+    <div class="text-center mt-2 text-3xl font-bold">Notes</div>
+    <div>
+        <form class="flex flex-col m-10 gap-y-2 " action="/create" method="post">
+            <input class=" mb-2  bg-zinc-700 outline-none p-2 rounded-lg" type="text" placeholder="Title goes here" name="title"/>
+            <textarea class="resize-none mb-2  bg-zinc-700 outline-none p-2 rounded-lg" placeholder="Enter whole details here" name="details"></textarea>
+            <input class=" bg-blue-600 w-fit p-2 rounded-lg" type="submit" value="Submit"/>
+        </form>
+    </div>
+
+    <div class="flex flex-wrap m-10 gap-x-2">
+
+        <% if(files.length>0){ %>
+            <% files.forEach((val)=>{ %>
+                <div class=" w-80 bg-zinc-700 p-2 rounded">
+                    <h1 class="text-2xl text-center"><%= val.split('.')[0]%></h1>
+                    <div class="flex justify-between">
+                        <a class="text-blue-600 " href="/file/<%=val%>">Read more...</a>
+                        <a class="text-yellow-600 " href="/edit/<%=val%>">Edit fileName</a>
+                        <form action="/delete/<%= val %>" method="post" >
+                            <button type="submit" class="text-red-600 ">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else{ %>
+            <h3 class="text-zinc-600">No Tasks yet..</h3>
+        <% } %>
+
+    </div>
+    
+</body>
+</html>
