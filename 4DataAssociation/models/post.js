@@ -4,17 +4,17 @@ const user = require('./user')
 const postSchema=mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:user
+        ref:"user"
     },
     date:{
         type:Date,
         default:Date.now
     },
     content:String,
-    likes:{
+    likes:[{
         type:mongoose.Schema.Types.ObjectId,
-        ref:user
-    }
+        ref:"user"
+    }]
 })
 
 module.exports=mongoose.model("post",postSchema)

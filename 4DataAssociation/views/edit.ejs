@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-900 text-white m-10">
+    <a href="/profile" class="text-blue-500 mb-2 inline-block">Back</a>
+    <h3 class="text-1xl text-zinc-500 mb-2">Edit Your Post</h3>
+    <form method="post" action="/edit">
+        <input hidden value="<%=post._id%>" name="id">
+        <textarea class="resize-none bg-zinc-800 outline-none h-32 w-96 p-2 rounded-lg block mb-2" placeholder="What's on your mind.." name="content"><%=post.content%></textarea>
+        <input class="bg-blue-600 px-4 py-2 rounded-lg font-semibold mb-10" type="submit" value="Edit Changes">
+    </form>
+</body>
+</html>

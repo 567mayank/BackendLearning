@@ -6,7 +6,7 @@ const jwt=require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const user = require('./models/user')
-// const 
+
 app.set("view engine","ejs");
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
@@ -20,22 +20,32 @@ app.get('/login',(req,res)=>{
 })
 app.get('/profile',isLoggedIn,async(req,res)=>{
     let foundUser = await userModel.findOne({email:req.user.email}).populate("posts");
-    console.log(foundUser);
     res.render("profile",{user:foundUser})
 })
-
-app.post("/post",isLoggedIn,async (req,res)=>{
-    let foundUser = await userModel.findOne({email:req.user.email});
-    let createdPost=await postModel.create({
-        user:foundUser._id,
-        content:req.body.content,
-    })
-    foundUser.posts.push(createdPost._id);
-    await foundUser.save();
+app.get("/logout",(req,res)=>{
+    res.cookie("token","");
+    res.redirect('/login');
+})
+app.get('/edit/:postId',isLoggedIn,async(req,res)=>{
+    let findPost= await postModel.findOne({_id:req.params.postId}).populate("user");
+    res.render("edit",{post:findPost});
+})
+app.get("/like/:postId",isLoggedIn,async (req,res)=>{
+    let findPost= await postModel.findOne({_id:req.params.postId}).populate("user")
+    if(!findPost.likes.includes(req.user.userid)) findPost.likes.push(req.user.userid);
+    else findPost.likes.pull(req.user.userid);
+    await findPost.save()
+    res.redirect("/profile");
+})
+app.get('/delete/:postId',isLoggedIn,async(req,res)=>{
+    await postModel.findOneAndDelete({_id:req.params.postId});
     res.redirect("/profile")
 })
+
+
 app.post("/create",async (req,res)=>{
     let {name,username,age,email,password}=req.body;
+    if(name.length===0||username.length===0||email.length===0||password.length===0) return res.status(500).send("Please Fill all details");
     let user= await userModel.findOne({email});
     if(user) return res.status(500).send("User already Exist");
     bcrypt.genSalt(10, function(err, salt) {
@@ -66,10 +76,23 @@ app.post("/login",async (req,res)=>{
         else return res.status(500).send("Something Went Wrong");
     });    
 })
-app.get("/logout",(req,res)=>{
-    res.cookie("token","");
-    res.redirect('/login');
+app.post("/post",isLoggedIn,async (req,res)=>{
+    let foundUser = await userModel.findOne({email:req.user.email});
+    let createdPost=await postModel.create({
+        user:foundUser._id,
+        content:req.body.content,
+    })
+    foundUser.posts.push(createdPost._id);
+    await foundUser.save();
+    res.redirect("/profile")
 })
+app.post("/edit",isLoggedIn,async (req,res)=>{
+    console.log(req.body.content);
+    await postModel.findOneAndUpdate({_id:req.body.id},{content:req.body.content},{new:true});
+    res.redirect("/profile")
+})
+
+
 function isLoggedIn(req,res,next){
     if(req.cookies.token=="") res.redirect("/login")
     else{
@@ -78,4 +101,5 @@ function isLoggedIn(req,res,next){
         next();
     }
 }
+
 app.listen(3000)
